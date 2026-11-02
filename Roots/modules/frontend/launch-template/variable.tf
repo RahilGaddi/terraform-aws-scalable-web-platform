@@ -38,3 +38,4 @@ variable "instanceid" {
   description = "Source instance ID for creating AMI"
   type        = string
 }
+

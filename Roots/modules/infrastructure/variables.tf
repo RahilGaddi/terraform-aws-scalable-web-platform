@@ -37,10 +37,6 @@ variable "availability_zone_1b" { type = string }
 
 
 
-variable "vpc_id" {
-  description = "VPC ID where security groups will be created"
-  type        = string
-}
 variable "allowed_ssh_cidr" {
   description = "CIDR block allowed for SSH access"
   type        = list(string)

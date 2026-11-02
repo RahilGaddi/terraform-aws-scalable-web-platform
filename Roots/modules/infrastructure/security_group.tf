@@ -2,7 +2,7 @@
 resource "aws_security_group" "bastion_host" {
   name        = "bastion-host-sg"
   description = "Allow SSH from allowed CIDRs"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.three_tier.id
 
   ingress {
     description = "Allow SSH"
@@ -35,7 +35,7 @@ resource "aws_security_group" "bastion_host" {
 resource "aws_security_group" "alb_frontend" {
   name        = "alb-frontend-sg"
   description = "Allow HTTP/HTTPS from public"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.three_tier.id
 
   ingress = [
     for port in [80, 443] : {
@@ -67,7 +67,7 @@ resource "aws_security_group" "alb_frontend" {
 resource "aws_security_group" "alb_backend" {
   name        = "alb-backend-sg"
   description = "Allow HTTP/HTTPS for backend"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.three_tier.id
 
   ingress = [
     for port in [80, 443] : {
@@ -99,7 +99,7 @@ resource "aws_security_group" "alb_backend" {
 resource "aws_security_group" "frontend_server" {
   name        = "frontend-server-sg"
   description = "Allow SSH + HTTP for frontend servers"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.three_tier.id
 
   ingress = [
     for port in [22, 80] : {
@@ -131,7 +131,7 @@ resource "aws_security_group" "frontend_server" {
 resource "aws_security_group" "backend_server" {
   name        = "backend-server-sg"
   description = "Allow SSH + HTTP for backend servers"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.three_tier.id
 
   ingress = [
     for port in [22, 80] : {
@@ -163,7 +163,7 @@ resource "aws_security_group" "backend_server" {
 resource "aws_security_group" "database" {
   name        = "database-sg"
   description = "Allow MySQL access"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.three_tier.id
 
   ingress {
     description = "MySQL/Aurora"

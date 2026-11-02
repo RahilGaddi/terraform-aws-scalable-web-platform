@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Three-Tier Task Manager</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 40px 16px; font-family: Arial, sans-serif; background: #eef2f7; color: #172033; }
+    main { max-width: 680px; margin: auto; padding: 28px; background: white; border-radius: 14px; box-shadow: 0 8px 30px #17203312; }
+    h1 { margin-top: 0; }
+    .sub { color: #64748b; }
+    form { display: flex; gap: 8px; margin: 24px 0; }
+    input { flex: 1; min-width: 0; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; }
+    button { padding: 12px 18px; border: 0; border-radius: 8px; background: #2563eb; color: white; cursor: pointer; }
+    li { padding: 13px 4px; border-bottom: 1px solid #e2e8f0; overflow-wrap: anywhere; }
+    #status { min-height: 22px; color: #475569; font-size: 14px; }
+    @media (max-width: 480px) { form { flex-direction: column; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Task Manager</h1>
+  <p class="sub">AWS three-tier demo · Frontend + Backend + RDS MySQL</p>
+  <form id="task-form">
+    <input id="task-title" maxlength="255" placeholder="Enter a task..." required>
+    <button type="submit">Add task</button>
+  </form>
+  <p id="status" role="status">Loading tasks...</p>
+  <ul id="tasks"></ul>
+</main>
+<script>
+const statusEl = document.getElementById("status");
+const listEl = document.getElementById("tasks");
+
+async function loadTasks() {
+  try {
+    const response = await fetch("/api/tasks");
+    if (!response.ok) throw new Error("API returned " + response.status);
+    const tasks = await response.json();
+    listEl.replaceChildren();
+    for (const task of tasks) {
+      const li = document.createElement("li");
+      li.textContent = task.title;
+      listEl.appendChild(li);
+    }
+    statusEl.textContent = `Loaded ${tasks.length} task(s) from the database.`;
+  } catch (error) {
+    statusEl.textContent = "Could not load tasks. Check backend ALB and database connectivity.";
+  }
+}
+
+document.getElementById("task-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const input = document.getElementById("task-title");
+  const title = input.value.trim();
+  if (!title) return;
+  try {
+    const response = await fetch("/api/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title })
+    });
+    if (!response.ok) throw new Error("Save failed");
+    input.value = "";
+    await loadTasks();
+  } catch (error) {
+    statusEl.textContent = "Could not save task. Check backend and RDS.";
+  }
+});
+
+loadTasks();
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@
 variable "aws_region" {
   description = "The AWS region to deploy resources"
   type        = string
-  default = ""
+  default     = ""
 }
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
@@ -57,30 +57,25 @@ variable "private_subnet_6_cidr" {
   type        = string
   default     = ""
 }
-variable "availability_zone_2a" {
+variable "availability_zone_1a" {
   description = "The first availability zone"
   type        = string
   default     = ""
 }
-variable "availability_zone_2b" {
+variable "availability_zone_1b" {
   description = "The second availability zone"
   type        = string
   default     = ""
 }
 variable "allowed_ssh_cidr" {
   description = "The CIDR block allowed to access the EC2 instances via SSH"
-  type        = string
-  default     = ""
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
 }
 
 # ────────────────────────────
 # frontend / backend /Bastion ec2 instance 
 # ─────────────────────────────
-variable "aws_regionn" {
-  description = "The AWS region to deploy resources"
-  type        = string
-  default     = ""
-}
 variable "ami" {
   description = "The AMI ID for the EC2 instance"
   type        = string
@@ -105,7 +100,7 @@ variable "identifier" {
   type        = string
   default     = ""
 }
-variable"db_name" {
+variable "db_name" {
   description = "The name of the RDS instance"
   type        = string
   default     = ""
@@ -120,4 +115,3 @@ variable "db_password" {
   type        = string
   default     = ""
 }
-
